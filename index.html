@@ -20,18 +20,30 @@
     --text: #f8fafc;
     --muted: #94a3b8;
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 24px 16px;
+    padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
   }
   .wrap { width: 100%; max-width: 720px; }
+  @media (max-width: 480px) {
+    body { padding: 14px 10px; }
+    .panel { padding: 16px; border-radius: 12px; }
+    h1 { font-size: 1.6rem; }
+    .qbox { padding: 16px; font-size: 1.05rem; }
+    .statbar { padding: 12px; gap: 8px; }
+    button.primary { padding: 14px 28px; width: 100%; }
+  }
   .center-screen {
     min-height: 80vh;
     display: flex;
@@ -97,16 +109,60 @@
     border: 1px solid #475569;
     color: var(--text);
     padding: 14px 16px;
+    min-height: 48px;
     border-radius: 10px;
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
   }
   .opt:hover:not(:disabled) { background: var(--blue-dark); border-color: var(--blue); }
   .opt:disabled { cursor: default; }
+  .opt.selected { background: var(--blue-dark); border-color: var(--blue); border-width: 2px; }
   .opt.correct { background: #15803d; border-color: #4ade80; border-width: 2px; }
   .opt.wrong { background: #b91c1c; border-color: #f87171; border-width: 2px; }
   .opt.dim { opacity: 0.45; }
+  .opt .unselect-hint { font-size: 0.72rem; color: #bfdbfe; opacity: 0.85; white-space: nowrap; }
+  .actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  button.submit-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    font-weight: 700;
+    padding: 12px 24px;
+    min-height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+  button.submit-btn:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
+  button.submit-btn:hover:not(:disabled) { background: #22c55e; }
+  .topbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+  button.menu-btn {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    min-height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  button.menu-btn:hover { color: var(--text); border-color: var(--muted); }
   .explain {
     margin-top: 18px;
     padding: 16px;
@@ -158,7 +214,7 @@
     bestStreak: 0,
     coins: 0,
     selected: null,
-    showExplanation: false,
+    submitted: false,
     screen: 'start' // start | playing | gameover | gamewon
   };
 
@@ -207,18 +263,31 @@
     state.bestStreak = 0;
     state.coins = 0;
     state.selected = null;
-    state.showExplanation = false;
+    state.submitted = false;
     state.screen = 'playing';
     render();
   }
 
-  function handleAnswer(index) {
-    if (state.selected !== null) return;
-    state.selected = index;
-    state.showExplanation = true;
+  function goHome() {
+    if (state.screen === 'playing' && (state.currentQuestion > 0 || state.selected !== null)) {
+      if (!confirm('Quit this round and return to the start menu? Your progress in this run will be lost.')) return;
+    }
+    state.screen = 'start';
+    render();
+  }
+
+  function selectOption(index) {
+    if (state.submitted) return;
+    state.selected = state.selected === index ? null : index;
+    render();
+  }
+
+  function submitAnswer() {
+    if (state.submitted || state.selected === null) return;
+    state.submitted = true;
 
     const q = state.runQuestions[state.currentQuestion];
-    if (index === q.answer) {
+    if (state.selected === q.answer) {
       state.score += 10;
       state.streak += 1;
       state.bestStreak = Math.max(state.bestStreak, state.streak);
@@ -232,7 +301,7 @@
 
   function nextQuestion() {
     state.selected = null;
-    state.showExplanation = false;
+    state.submitted = false;
 
     if (state.lives <= 0) {
       state.screen = 'gameover';
@@ -284,9 +353,11 @@
         <p class="result-line">Final XP: ${state.score} | Title: ${LEVEL_TITLES[currentLevel()]}</p>
         <p class="result-line" style="color:var(--orange)">Best Streak: ${state.bestStreak} \u{1F525}</p>
         <button class="primary" id="restartBtn" style="margin-top:16px;">Reboot System &amp; Try Again</button>
+        <button class="menu-btn" id="homeBtn" style="margin-top:12px;">\u{1F3E0} Back to Menu</button>
       </div>
     `;
     document.getElementById('restartBtn').onclick = startGame;
+    document.getElementById('homeBtn').onclick = goHome;
   }
 
   function renderGameWon() {
@@ -298,9 +369,11 @@
         <p class="result-line" style="color:var(--orange)">Best Streak: ${state.bestStreak} \u{1F525}</p>
         <p class="result-line" style="color:var(--yellow)">Tech Coins Earned: \u{1FA99} ${state.coins}</p>
         <button class="primary" id="nextRoundBtn" style="margin-top:16px;">Take Next Round</button>
+        <button class="menu-btn" id="homeBtn" style="margin-top:12px;">\u{1F3E0} Back to Menu</button>
       </div>
     `;
     document.getElementById('nextRoundBtn').onclick = startGame;
+    document.getElementById('homeBtn').onclick = goHome;
   }
 
   function renderPlaying() {
@@ -311,18 +384,22 @@
 
     const optionsHtml = q.options.map((opt, idx) => {
       let cls = 'opt';
-      if (state.selected !== null) {
+      let hint = '';
+      if (state.submitted) {
         if (idx === q.answer) cls += ' correct';
         else if (idx === state.selected) cls += ' wrong';
         else cls += ' dim';
+      } else if (idx === state.selected) {
+        cls += ' selected';
+        hint = '<span class="unselect-hint">tap to unselect</span>';
       }
-      return `<button class="${cls}" data-idx="${idx}" ${state.selected !== null ? 'disabled' : ''}>${esc(opt)}</button>`;
+      return `<button class="${cls}" data-idx="${idx}" ${state.submitted ? 'disabled' : ''}><span>${esc(opt)}</span>${hint}</button>`;
     }).join('');
 
     const streakHtml = state.streak >= 2 ? `<span class="streak">\u{1F525} ${state.streak} Streak!</span>` : '';
 
     let explainHtml = '';
-    if (state.showExplanation) {
+    if (state.submitted) {
       const good = state.selected === q.answer;
       explainHtml = `
         <div class="explain">
@@ -333,7 +410,14 @@
       `;
     }
 
+    const submitRowHtml = !state.submitted ? `
+      <div class="actions-row">
+        <button class="submit-btn" id="submitBtn" ${state.selected === null ? 'disabled' : ''}>Submit Answer</button>
+      </div>
+    ` : '';
+
     app.innerHTML = `
+      <div class="topbar"><button class="menu-btn" id="homeBtn">\u{1F3E0} Menu</button></div>
       <h1 style="text-align:center;font-size:1.8rem;">A+ 1200 Quest</h1>
       <div class="panel">
         <div class="statbar">
@@ -348,15 +432,20 @@
         </div>
         <div class="qbox">${esc(q.question)}</div>
         <div class="options">${optionsHtml}</div>
+        ${submitRowHtml}
         ${explainHtml}
       </div>
     `;
 
     document.querySelectorAll('.opt').forEach(btn => {
-      btn.addEventListener('click', () => handleAnswer(parseInt(btn.getAttribute('data-idx'), 10)));
+      btn.addEventListener('click', () => selectOption(parseInt(btn.getAttribute('data-idx'), 10)));
     });
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) submitBtn.addEventListener('click', submitAnswer);
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
+    const homeBtn = document.getElementById('homeBtn');
+    if (homeBtn) homeBtn.addEventListener('click', goHome);
   }
 
   render();
