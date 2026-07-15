@@ -1,7 +1,11 @@
-const CACHE_NAME = 'aplus-quest-v1';
+const CACHE_NAME = 'aplus-quest-v3';
 const ASSETS = [
   './',
   './index.html',
+  './data.js',
+  './cable_data.js',
+  './printer_data.js',
+  './pbq_data.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
