@@ -110,6 +110,16 @@
     margin-bottom: 20px;
     line-height: 1.4;
   }
+  .qimage {
+    display: flex;
+    justify-content: center;
+    background: #1e293b;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin: -8px 0 20px;
+  }
+  .qimage svg { width: 160px; height: auto; max-width: 100%; }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt {
     text-align: left;
@@ -399,11 +409,11 @@
   }
 
   function shuffleQuestion(item) {
-    const q = item[0], opts = item[1], correctIdx = item[2], exp = item[3];
+    const q = item[0], opts = item[1], correctIdx = item[2], exp = item[3], image = item[5];
     const order = shuffle([0, 1, 2, 3]);
     const newOpts = order.map(i => opts[i]);
     const newCorrect = order.indexOf(correctIdx);
-    return { question: q, options: newOpts, answer: newCorrect, explanation: exp };
+    return { question: q, options: newOpts, answer: newCorrect, explanation: exp, image: image };
   }
 
   function buildRun() {
@@ -1017,6 +1027,7 @@
           ${streakHtml}
         </div>
         <div class="qbox">${esc(q.question)}</div>
+        ${q.image ? `<div class="qimage">${q.image}</div>` : ''}
         <div class="options">${optionsHtml}</div>
         ${submitRowHtml}
         ${explainHtml}
