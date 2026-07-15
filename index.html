@@ -349,6 +349,7 @@
 <script src="cable_data.js"></script>
 <script src="printer_data.js"></script>
 <script src="pbq_data.js"></script>
+<script src="reference_data.js"></script>
 <script>
 (function () {
   const TOTAL_QUESTIONS_PER_RUN = 15;
@@ -615,6 +616,10 @@
     if (state.screen === 'reference') return renderReferenceHub();
     if (state.screen === 'cabling') return renderCabling();
     if (state.screen === 'printers') return renderPrinters();
+    if (state.screen === 'raid') return renderRAID();
+    if (state.screen === 'ports') return renderPorts();
+    if (state.screen === 'wireless') return renderWireless();
+    if (state.screen === 'filesystems') return renderFileSystems();
     if (state.screen === 'pbq') return renderPBQ();
     if (state.screen === 'pbq-done') return renderPBQDone();
     return renderPlaying();
@@ -703,11 +708,127 @@
             <span class="ref-sub">Printer types, the laser imaging process, connections &amp; troubleshooting</span>
           </span>
         </button>
+        <button class="ref-card" id="raidCard">
+          <span class="ref-icon">${refBadge('RAID', '#a78bfa')}</span>
+          <span>
+            <span class="ref-title">RAID Levels</span>
+            <span class="ref-sub">RAID 0, 1, 5, 10 - drive counts, fault tolerance, capacity</span>
+          </span>
+        </button>
+        <button class="ref-card" id="portsCard">
+          <span class="ref-icon">${refBadge('443', '#4ade80')}</span>
+          <span>
+            <span class="ref-title">Ports &amp; Protocols</span>
+            <span class="ref-sub">${PORTS_PROTOCOLS.length} commonly-tested port numbers</span>
+          </span>
+        </button>
+        <button class="ref-card" id="wirelessCard">
+          <span class="ref-icon">${refBadge('WPA3', '#fb923c')}</span>
+          <span>
+            <span class="ref-title">Wireless Security</span>
+            <span class="ref-sub">WEP vs. WPA vs. WPA2 vs. WPA3</span>
+          </span>
+        </button>
+        <button class="ref-card" id="fsCard">
+          <span class="ref-icon">${refBadge('NTFS', '#facc15')}</span>
+          <span>
+            <span class="ref-title">File Systems</span>
+            <span class="ref-sub">FAT32, exFAT, NTFS, ext4, APFS compared</span>
+          </span>
+        </button>
       </div>
     `;
     document.getElementById('homeBtn').addEventListener('click', goHome);
     document.getElementById('cablingCard').addEventListener('click', () => goToScreen('cabling'));
     document.getElementById('printersCard').addEventListener('click', () => goToScreen('printers'));
+    document.getElementById('raidCard').addEventListener('click', () => goToScreen('raid'));
+    document.getElementById('portsCard').addEventListener('click', () => goToScreen('ports'));
+    document.getElementById('wirelessCard').addEventListener('click', () => goToScreen('wireless'));
+    document.getElementById('fsCard').addEventListener('click', () => goToScreen('filesystems'));
+  }
+
+  function refBadge(label, color) {
+    return `<svg viewBox="0 0 160 110" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="25" width="120" height="60" rx="10" fill="${color}"/>
+      <text x="80" y="63" font-size="26" font-weight="800" text-anchor="middle" fill="#0f172a" font-family="Segoe UI, sans-serif">${label}</text>
+    </svg>`;
+  }
+
+  function renderRAID() {
+    const cardsHtml = RAID_LEVELS.map(r => `
+      <div class="detail-card">
+        <h3 style="margin-bottom:8px;">${esc(r.name)}</h3>
+        <div class="spec-row"><span class="spec-label">Min. Drives</span><span class="spec-value">${esc(r.minDrives)}</span></div>
+        <div class="spec-row"><span class="spec-label">Fault Tolerance</span><span class="spec-value">${esc(r.faultTolerance)}</span></div>
+        <div class="spec-row"><span class="spec-label">Usable Space</span><span class="spec-value">${esc(r.usableCapacity)}</span></div>
+        <div class="spec-row"><span class="spec-label">Details</span><span class="spec-value">${esc(r.description)}</span></div>
+      </div>
+    `).join('');
+    app.innerHTML = `
+      <div class="topbar"><button class="menu-btn" id="homeBtn">\u{1F3E0} Menu</button></div>
+      <h1 style="text-align:center;font-size:1.6rem;">RAID Levels</h1>
+      <div>${cardsHtml}</div>
+      <button class="menu-btn" id="backBtn" style="width:100%;margin-top:4px;">Back to Reference</button>
+    `;
+    document.getElementById('homeBtn').addEventListener('click', goHome);
+    document.getElementById('backBtn').addEventListener('click', () => goToScreen('reference'));
+  }
+
+  function renderPorts() {
+    const rows = PORTS_PROTOCOLS.map(p => `
+      <tr><td>${esc(p.port)}</td><td>${esc(p.protocol)}</td><td>${esc(p.detail)}</td></tr>
+    `).join('');
+    app.innerHTML = `
+      <div class="topbar"><button class="menu-btn" id="homeBtn">\u{1F3E0} Menu</button></div>
+      <h1 style="text-align:center;font-size:1.6rem;">Ports &amp; Protocols</h1>
+      <div class="detail-card">
+        <div style="overflow-x:auto;">
+          <table class="tt-table">
+            <thead><tr><th>Port</th><th>Protocol</th><th>What it's for</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+      <button class="menu-btn" id="backBtn" style="width:100%;margin-top:4px;">Back to Reference</button>
+    `;
+    document.getElementById('homeBtn').addEventListener('click', goHome);
+    document.getElementById('backBtn').addEventListener('click', () => goToScreen('reference'));
+  }
+
+  function renderWireless() {
+    const cardsHtml = WIRELESS_SECURITY.map(w => `
+      <div class="detail-card">
+        <h3 style="margin-bottom:8px;">${esc(w.name)}</h3>
+        <p class="spec-value" style="text-align:left;">${esc(w.detail)}</p>
+      </div>
+    `).join('');
+    app.innerHTML = `
+      <div class="topbar"><button class="menu-btn" id="homeBtn">\u{1F3E0} Menu</button></div>
+      <h1 style="text-align:center;font-size:1.6rem;">Wireless Security Standards</h1>
+      <p class="subtitle small" style="text-align:center;">Listed oldest/weakest to newest/strongest.</p>
+      <div>${cardsHtml}</div>
+      <button class="menu-btn" id="backBtn" style="width:100%;margin-top:4px;">Back to Reference</button>
+    `;
+    document.getElementById('homeBtn').addEventListener('click', goHome);
+    document.getElementById('backBtn').addEventListener('click', () => goToScreen('reference'));
+  }
+
+  function renderFileSystems() {
+    const cardsHtml = FILE_SYSTEMS.map(f => `
+      <div class="detail-card">
+        <h3 style="margin-bottom:8px;">${esc(f.name)}</h3>
+        <div class="spec-row"><span class="spec-label">Max File Size</span><span class="spec-value">${esc(f.maxFileSize)}</span></div>
+        <div class="spec-row"><span class="spec-label">Details</span><span class="spec-value">${esc(f.detail)}</span></div>
+      </div>
+    `).join('');
+    app.innerHTML = `
+      <div class="topbar"><button class="menu-btn" id="homeBtn">\u{1F3E0} Menu</button></div>
+      <h1 style="text-align:center;font-size:1.6rem;">File Systems</h1>
+      <div>${cardsHtml}</div>
+      <button class="menu-btn" id="backBtn" style="width:100%;margin-top:4px;">Back to Reference</button>
+    `;
+    document.getElementById('homeBtn').addEventListener('click', goHome);
+    document.getElementById('backBtn').addEventListener('click', () => goToScreen('reference'));
   }
 
   function renderCabling() {

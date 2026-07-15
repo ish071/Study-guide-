@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aplus-quest-v3';
+const CACHE_NAME = 'aplus-quest-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,7 @@ const ASSETS = [
   './cable_data.js',
   './printer_data.js',
   './pbq_data.js',
+  './reference_data.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
