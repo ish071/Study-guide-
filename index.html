@@ -370,6 +370,9 @@
   .result-title.win { color: #39ff88; }
   .result-title.lose { color: #ff4d6d; }
   .result-line { font-size: 1.05rem; margin: 4px 0; color: var(--muted); }
+  .best-line { margin-top: 10px; font-size: 0.95rem; }
+  .best-line.new-best { color: var(--yellow); font-weight: 700; text-shadow: 0 0 10px rgba(255,230,0,0.6); }
+  .best-badge { color: var(--yellow) !important; text-shadow: 0 0 8px rgba(255,230,0,0.5); }
 </style>
 </head>
 <body>
@@ -384,6 +387,42 @@
 (function () {
   const TOTAL_QUESTIONS_PER_RUN = 15;
   const MAX_LIVES = 5;
+  const HS_PREFIX = 'aplusquest_hs_';
+  const HS_OVERALL_KEY = HS_PREFIX + 'overall';
+  const HS_PBQ_KEY = HS_PREFIX + 'pbq';
+
+  function safeGetHighScore(key) {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? parseInt(v, 10) : 0;
+    } catch (e) { return 0; }
+  }
+
+  function safeSetHighScore(key, value) {
+    try { localStorage.setItem(key, String(value)); } catch (e) {}
+  }
+
+  function topicHighScoreKey() {
+    return HS_PREFIX + 'topics_' + Array.from(state.selectedDomains).sort().join(',');
+  }
+
+  function recordQuizScore(score) {
+    const key = topicHighScoreKey();
+    const prevTopicBest = safeGetHighScore(key);
+    const prevOverallBest = safeGetHighScore(HS_OVERALL_KEY);
+    const isNewTopicBest = score > prevTopicBest;
+    const isNewOverallBest = score > prevOverallBest;
+    if (isNewTopicBest) safeSetHighScore(key, score);
+    if (isNewOverallBest) safeSetHighScore(HS_OVERALL_KEY, score);
+    return { isNewTopicBest, prevTopicBest, isNewOverallBest };
+  }
+
+  function recordPBQScore(score) {
+    const prevBest = safeGetHighScore(HS_PBQ_KEY);
+    const isNewBest = score > prevBest;
+    if (isNewBest) safeSetHighScore(HS_PBQ_KEY, score);
+    return { isNewBest, prevBest };
+  }
   const LEVEL_TITLES = ["Help Desk Trainee", "Help Desk Analyst", "IT Support Specialist", "SysAdmin", "Network Engineer"];
   const DOMAIN_ORDER = [
     "Mobile Devices",
@@ -587,6 +626,7 @@
   function nextPBQ() {
     if (state.pbqIndex + 1 >= state.pbqQueue.length) {
       state.screen = 'pbq-done';
+      state.pbqScoreResult = recordPBQScore(state.pbqScore);
     } else {
       state.pbqIndex += 1;
       setupPBQExercise();
@@ -623,11 +663,13 @@
 
     if (state.lives <= 0) {
       state.screen = 'gameover';
+      state.scoreResult = recordQuizScore(state.score);
       render();
       return;
     }
     if (state.currentQuestion + 1 >= state.runQuestions.length) {
       state.screen = 'gamewon';
+      state.scoreResult = recordQuizScore(state.score);
     } else {
       state.currentQuestion += 1;
     }
@@ -662,11 +704,14 @@
   }
 
   function renderStart() {
+    const overallBest = safeGetHighScore(HS_OVERALL_KEY);
+    const bestBadgeHtml = overallBest > 0 ? `<p class="subtitle small best-badge">\u{1F3C6} Your Best: ${overallBest} XP (this device)</p>` : '';
     app.innerHTML = `
       <div class="center-screen">
         <h1>A+ 1200 Quest</h1>
         <p class="subtitle">A CompTIA A+ Core study game built from the ACI Learning A+ 1200 series eBook.</p>
         <p class="subtitle small">${QUESTION_BANK.length} unique questions pulled straight from the course's own Knowledge Checks, covering hardware, OS, networking, virtualization, security, mobile devices, and operational procedures.</p>
+        ${bestBadgeHtml}
         <div class="menu-grid">
           <button class="primary" id="startBtn">Choose Topics &amp; Play</button>
           <button class="secondary" id="pbqBtn">Practice PBQs</button>
@@ -1095,11 +1140,30 @@
     if (backToStartBtn) backToStartBtn.addEventListener('click', backToStart);
   }
 
+  function quizBestLineHtml() {
+    const r = state.scoreResult;
+    if (!r) return '';
+    if (r.isNewTopicBest) {
+      return `<p class="result-line best-line new-best">\u{1F3C6} New Best for this topic selection!</p>`;
+    }
+    return `<p class="result-line best-line">Best for this topic selection: ${r.prevTopicBest} XP</p>`;
+  }
+
+  function pbqBestLineHtml() {
+    const r = state.pbqScoreResult;
+    if (!r) return '';
+    if (r.isNewBest) {
+      return `<p class="result-line best-line new-best">\u{1F3C6} New Best!</p>`;
+    }
+    return `<p class="result-line best-line">Best: ${r.prevBest} / ${state.pbqQueue.length}</p>`;
+  }
+
   function renderPBQDone() {
     app.innerHTML = `
       <div class="center-screen">
         <div class="result-title win">PBQ Practice Complete!</div>
         <p class="result-line">Score: ${state.pbqScore} / ${state.pbqQueue.length} exercises fully correct</p>
+        ${pbqBestLineHtml()}
         <button class="primary" id="againBtn" style="margin-top:16px;">Practice Again</button>
         <button class="menu-btn" id="homeBtn" style="margin-top:12px;">\u{1F3E0} Back to Menu</button>
       </div>
@@ -1115,6 +1179,7 @@
         <p class="result-line">You ran out of lives.</p>
         <p class="result-line">Final XP: ${state.score} | Title: ${LEVEL_TITLES[currentLevel()]}</p>
         <p class="result-line" style="color:var(--orange)">Best Streak: ${state.bestStreak} \u{1F525}</p>
+        ${quizBestLineHtml()}
         <button class="primary" id="restartBtn" style="margin-top:16px;">Reboot System &amp; Try Again</button>
         <button class="menu-btn" id="homeBtn" style="margin-top:12px;">\u{1F3E0} Back to Menu</button>
       </div>
@@ -1131,6 +1196,7 @@
         <p class="result-line" style="color:var(--purple)">Rank Achieved: ${LEVEL_TITLES[currentLevel()]}</p>
         <p class="result-line" style="color:var(--orange)">Best Streak: ${state.bestStreak} \u{1F525}</p>
         <p class="result-line" style="color:var(--yellow)">Tech Coins Earned: \u{1FA99} ${state.coins}</p>
+        ${quizBestLineHtml()}
         <button class="primary" id="nextRoundBtn" style="margin-top:16px;">Take Next Round</button>
         <button class="menu-btn" id="homeBtn" style="margin-top:12px;">\u{1F3E0} Back to Menu</button>
       </div>
