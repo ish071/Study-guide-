@@ -6,7 +6,7 @@
 <title>A+ 1200 Quest</title>
 <meta name="description" content="A CompTIA A+ Core 1200 series study game with topic-filtered practice rounds.">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#05060f">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,24 +14,30 @@
 <meta name="apple-mobile-web-app-title" content="A+ Quest">
 <style>
   :root {
-    --bg: #0f172a;
-    --panel: #1e293b;
-    --panel2: #0f1729;
-    --border: #334155;
-    --blue: #3b82f6;
-    --blue-dark: #2563eb;
-    --green: #16a34a;
-    --red: #dc2626;
-    --purple: #a78bfa;
-    --yellow: #facc15;
-    --orange: #fb923c;
-    --text: #f8fafc;
-    --muted: #94a3b8;
+    --bg: #05060f;
+    --panel: #0d1526;
+    --panel2: #090d18;
+    --border: #26406b;
+    --blue: #00e5ff;
+    --blue-dark: #ff2e97;
+    --green: #00b368;
+    --red: #ff003c;
+    --purple: #c26bff;
+    --yellow: #ffe600;
+    --orange: #ff8c1a;
+    --text: #eaf6ff;
+    --muted: #6b7a99;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(255,46,151,0.16), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(0,229,255,0.12), transparent 55%),
+      repeating-linear-gradient(0deg, rgba(0,229,255,0.05) 0px, rgba(0,229,255,0.05) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, rgba(0,229,255,0.05) 0px, rgba(0,229,255,0.05) 1px, transparent 1px, transparent 40px),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -61,28 +67,37 @@
     text-align: center;
     padding: 24px;
   }
-  h1 { color: var(--blue); font-size: 2.2rem; font-weight: 800; margin: 0 0 12px; }
+  h1 {
+    color: var(--blue);
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 8px rgba(0,229,255,0.85), 0 0 22px rgba(0,229,255,0.45), 0 0 2px #fff;
+  }
   .subtitle { color: var(--muted); max-width: 520px; margin: 0 auto 10px; }
-  .subtitle.small { font-size: 0.9rem; color: #64748b; margin-bottom: 28px; }
+  .subtitle.small { font-size: 0.9rem; color: #56678a; margin-bottom: 28px; }
   button.primary {
     background: var(--blue-dark);
     color: white;
     font-weight: 700;
-    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid #ff85c2;
     padding: 16px 40px;
     border-radius: 10px;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background 0.2s;
-    box-shadow: 0 0 20px rgba(59,130,246,0.5);
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 18px rgba(255,46,151,0.65), 0 0 40px rgba(255,46,151,0.25);
   }
-  button.primary:hover { background: var(--blue); }
+  button.primary:hover { background: var(--blue); box-shadow: 0 0 18px rgba(0,229,255,0.75), 0 0 40px rgba(0,229,255,0.3); }
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 24px rgba(0,229,255,0.08), inset 0 0 40px rgba(255,46,151,0.03);
   }
   .statbar {
     display: grid;
@@ -100,10 +115,10 @@
   .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); display: block; }
   .stat-value { font-weight: 700; font-size: 1.05rem; }
   .qheader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-  .qheader h2 { font-size: 1.15rem; color: #e2e8f0; margin: 0; }
+  .qheader h2 { font-size: 1.15rem; color: #dff8ff; margin: 0; }
   .streak { font-size: 0.85rem; font-weight: 700; color: var(--orange); }
   .qbox {
-    background: #334155;
+    background: #101a30;
     padding: 22px;
     border-radius: 10px;
     font-size: 1.15rem;
@@ -113,7 +128,7 @@
   .qimage {
     display: flex;
     justify-content: center;
-    background: #1e293b;
+    background: #0d1526;
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 16px;
@@ -123,8 +138,8 @@
   .options { display: flex; flex-direction: column; gap: 10px; }
   .opt {
     text-align: left;
-    background: #334155;
-    border: 1px solid #475569;
+    background: #101a30;
+    border: 1px solid #2a3a5c;
     color: var(--text);
     padding: 14px 16px;
     min-height: 48px;
@@ -140,12 +155,12 @@
   }
   .opt:hover:not(:disabled) { background: var(--blue-dark); border-color: var(--blue); }
   .opt:disabled { cursor: default; }
-  .opt.selected { background: var(--blue-dark); border-color: var(--blue); border-width: 2px; }
-  .opt.correct { background: #15803d; border-color: #4ade80; border-width: 2px; }
-  .opt.wrong { background: #b91c1c; border-color: #f87171; border-width: 2px; }
+  .opt.selected { background: var(--blue-dark); border-color: var(--blue); border-width: 2px; box-shadow: 0 0 14px rgba(0,229,255,0.5); }
+  .opt.correct { background: #013320; border-color: #39ff88; border-width: 2px; box-shadow: 0 0 14px rgba(57,255,136,0.5); }
+  .opt.wrong { background: #4a0018; border-color: #ff4d6d; border-width: 2px; box-shadow: 0 0 14px rgba(255,77,109,0.5); }
   .opt.dim { opacity: 0.45; }
   .opt > span:first-child { flex: 1; min-width: 0; overflow-wrap: break-word; }
-  .opt .unselect-hint { font-size: 0.72rem; color: #bfdbfe; opacity: 0.85; white-space: nowrap; }
+  .opt .unselect-hint { font-size: 0.72rem; color: #9be8ff; opacity: 0.85; white-space: nowrap; }
   .actions-row {
     display: flex;
     gap: 10px;
@@ -164,8 +179,8 @@
     font-size: 0.95rem;
     flex: 1;
   }
-  button.submit-btn:disabled { background: #475569; cursor: not-allowed; opacity: 0.6; }
-  button.submit-btn:hover:not(:disabled) { background: #22c55e; }
+  button.submit-btn:disabled { background: #2a3a5c; cursor: not-allowed; opacity: 0.6; }
+  button.submit-btn:hover:not(:disabled) { background: #33ffb0; }
   .topbar {
     display: flex;
     justify-content: flex-end;
@@ -187,8 +202,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #334155;
-    border: 1px solid #475569;
+    background: #101a30;
+    border: 1px solid #2a3a5c;
     border-radius: 10px;
     padding: 12px 16px;
     cursor: pointer;
@@ -223,7 +238,7 @@
     cursor: pointer;
     min-height: 48px;
   }
-  .menu-grid button.secondary:hover { border-color: var(--blue); background: #253449; }
+  .menu-grid button.secondary:hover { border-color: var(--blue); background: #16223d; }
 
   /* Reference hub + detail screens */
   .ref-hub { display: flex; flex-direction: column; gap: 12px; margin: 10px 0; }
@@ -231,8 +246,8 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    background: #334155;
-    border: 1px solid #475569;
+    background: #101a30;
+    border: 1px solid #2a3a5c;
     border-radius: 12px;
     padding: 16px;
     cursor: pointer;
@@ -246,24 +261,24 @@
   .ref-card .ref-sub { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
 
   .detail-card {
-    background: #334155;
-    border: 1px solid #475569;
+    background: #101a30;
+    border: 1px solid #2a3a5c;
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 14px;
     text-align: left;
   }
   .detail-card .detail-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
-  .detail-card .detail-icon { flex-shrink: 0; width: 56px; height: 56px; background: #1e293b; border-radius: 8px; padding: 4px; }
+  .detail-card .detail-icon { flex-shrink: 0; width: 56px; height: 56px; background: #0d1526; border-radius: 8px; padding: 4px; }
   .detail-card .detail-icon svg { width: 100%; height: 100%; }
-  .detail-card h3 { margin: 0; font-size: 1.05rem; color: #e2e8f0; }
-  .spec-row { display: flex; gap: 8px; font-size: 0.85rem; padding: 4px 0; border-top: 1px solid #475569; }
+  .detail-card h3 { margin: 0; font-size: 1.05rem; color: #dff8ff; }
+  .spec-row { display: flex; gap: 8px; font-size: 0.85rem; padding: 4px 0; border-top: 1px solid #2a3a5c; }
   .spec-row:first-of-type { border-top: none; }
   .spec-row .spec-label { color: var(--muted); flex: 0 0 90px; font-weight: 600; }
-  .spec-row .spec-value { color: #cbd5e1; flex: 1; }
+  .spec-row .spec-value { color: #a9c4e0; flex: 1; }
 
   .process-list { display: flex; flex-direction: column; gap: 8px; text-align: left; margin: 10px 0; }
-  .process-step { display: flex; gap: 10px; background: #334155; border-radius: 10px; padding: 10px 14px; align-items: flex-start; }
+  .process-step { display: flex; gap: 10px; background: #101a30; border-radius: 10px; padding: 10px 14px; align-items: flex-start; }
   .process-step .step-num {
     flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
     background: var(--blue-dark); color: white; font-weight: 700; font-size: 0.85rem;
@@ -273,41 +288,41 @@
   .process-step .step-body span { font-size: 0.8rem; color: var(--muted); }
 
   .tt-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
-  .tt-table th, .tt-table td { padding: 8px 6px; border-bottom: 1px solid #475569; vertical-align: top; }
+  .tt-table th, .tt-table td { padding: 8px 6px; border-bottom: 1px solid #2a3a5c; vertical-align: top; }
   .tt-table th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
 
   /* PBQ practice mode */
-  .pbq-prompt { background: #334155; padding: 16px; border-radius: 10px; margin-bottom: 16px; font-size: 1rem; line-height: 1.4; text-align: left; }
+  .pbq-prompt { background: #101a30; padding: 16px; border-radius: 10px; margin-bottom: 16px; font-size: 1rem; line-height: 1.4; text-align: left; }
   .pbq-section-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 14px 0 8px; text-align: left; }
   .pbq-slots { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
   .pbq-slot {
     display: flex; align-items: center; gap: 10px;
     min-height: 46px; border-radius: 10px; padding: 10px 14px;
-    background: #1e293b; border: 1px dashed #475569; text-align: left; cursor: pointer;
+    background: #0d1526; border: 1px dashed #2a3a5c; text-align: left; cursor: pointer;
   }
-  .pbq-slot.filled { background: #334155; border: 1px solid var(--blue); cursor: pointer; }
-  .pbq-slot.correct { background: #15803d; border-color: #4ade80; }
-  .pbq-slot.incorrect { background: #b91c1c; border-color: #f87171; }
-  .pbq-slot .slot-num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: #475569; color: white; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pbq-slot.filled { background: #101a30; border: 1px solid var(--blue); cursor: pointer; }
+  .pbq-slot.correct { background: #013320; border-color: #39ff88; }
+  .pbq-slot.incorrect { background: #4a0018; border-color: #ff4d6d; }
+  .pbq-slot .slot-num { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: #2a3a5c; color: white; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   .pbq-chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .pbq-chip {
-    background: #334155; border: 1px solid #475569; color: var(--text);
+    background: #101a30; border: 1px solid #2a3a5c; color: var(--text);
     padding: 10px 14px; border-radius: 20px; font-size: 0.9rem; cursor: pointer; min-height: 40px;
   }
   .pbq-chip:hover { border-color: var(--blue); }
   .pbq-match-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .pbq-match-left {
-    flex: 1; min-width: 0; background: #334155; border: 1px solid #475569; border-radius: 10px;
+    flex: 1; min-width: 0; background: #101a30; border: 1px solid #2a3a5c; border-radius: 10px;
     padding: 10px 12px; font-size: 0.88rem; cursor: pointer; min-height: 44px; display: flex; align-items: center;
   }
   .pbq-match-left.active { border-color: var(--blue); background: var(--blue-dark); }
-  .pbq-match-left.paired { border-color: #4ade80; }
-  .pbq-match-left.correct { background: #15803d; border-color: #4ade80; }
-  .pbq-match-left.incorrect { background: #b91c1c; border-color: #f87171; }
+  .pbq-match-left.paired { border-color: #39ff88; }
+  .pbq-match-left.correct { background: #013320; border-color: #39ff88; }
+  .pbq-match-left.incorrect { background: #4a0018; border-color: #ff4d6d; }
   .pbq-match-arrow { color: var(--muted); flex-shrink: 0; }
   .pbq-match-right-slot {
     flex: 1; min-width: 0; font-size: 0.82rem; color: var(--muted); padding: 6px 8px;
-    border: 1px dashed #475569; border-radius: 8px; min-height: 32px; display: flex; align-items: center;
+    border: 1px dashed #2a3a5c; border-radius: 8px; min-height: 32px; display: flex; align-items: center;
   }
   .pbq-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   .pbq-option-chip.used { opacity: 0.35; pointer-events: none; }
@@ -321,9 +336,9 @@
     border-radius: 10px;
   }
   .explain .verdict { font-weight: 700; margin: 0 0 8px; }
-  .verdict.good { color: #4ade80; }
-  .verdict.bad { color: #f87171; }
-  .explain p.body { color: #cbd5e1; font-size: 0.92rem; line-height: 1.5; margin: 0; }
+  .verdict.good { color: #39ff88; }
+  .verdict.bad { color: #ff4d6d; }
+  .explain p.body { color: #a9c4e0; font-size: 0.92rem; line-height: 1.5; margin: 0; }
   button.next {
     margin-top: 16px;
     background: var(--blue-dark);
@@ -336,9 +351,24 @@
     font-size: 0.95rem;
   }
   button.next:hover { background: var(--blue); }
+  .post-answer-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .post-answer-row button.next { margin-top: 16px; flex: 1; }
+  button.back-to-start-btn {
+    margin-top: 16px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-weight: 600;
+    padding: 10px 18px;
+    min-height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  button.back-to-start-btn:hover { color: var(--text); border-color: var(--muted); }
   .result-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 14px; }
-  .result-title.win { color: #4ade80; }
-  .result-title.lose { color: #f87171; }
+  .result-title.win { color: #39ff88; }
+  .result-title.lose { color: #ff4d6d; }
   .result-line { font-size: 1.05rem; margin: 4px 0; color: var(--muted); }
 </style>
 </head>
@@ -353,6 +383,7 @@
 <script>
 (function () {
   const TOTAL_QUESTIONS_PER_RUN = 15;
+  const MAX_LIVES = 5;
   const LEVEL_TITLES = ["Help Desk Trainee", "Help Desk Analyst", "IT Support Specialist", "SysAdmin", "Network Engineer"];
   const DOMAIN_ORDER = [
     "Mobile Devices",
@@ -378,7 +409,7 @@
     runQuestions: [],
     currentQuestion: 0,
     score: 0,
-    lives: 3,
+    lives: MAX_LIVES,
     streak: 0,
     bestStreak: 0,
     coins: 0,
@@ -450,7 +481,7 @@
     buildRun();
     state.currentQuestion = 0;
     state.score = 0;
-    state.lives = 3;
+    state.lives = MAX_LIVES;
     state.streak = 0;
     state.bestStreak = 0;
     state.coins = 0;
@@ -467,6 +498,11 @@
     if (state.screen === 'pbq' && state.pbqIndex > 0) {
       if (!confirm('Quit PBQ practice and return to the start menu? Your progress in this session will be lost.')) return;
     }
+    state.screen = 'start';
+    render();
+  }
+
+  function backToStart() {
     state.screen = 'start';
     render();
   }
@@ -709,28 +745,28 @@
           </span>
         </button>
         <button class="ref-card" id="raidCard">
-          <span class="ref-icon">${refBadge('RAID', '#a78bfa')}</span>
+          <span class="ref-icon">${refBadge('RAID', '#c26bff')}</span>
           <span>
             <span class="ref-title">RAID Levels</span>
             <span class="ref-sub">RAID 0, 1, 5, 10 - drive counts, fault tolerance, capacity</span>
           </span>
         </button>
         <button class="ref-card" id="portsCard">
-          <span class="ref-icon">${refBadge('443', '#4ade80')}</span>
+          <span class="ref-icon">${refBadge('443', '#39ff88')}</span>
           <span>
             <span class="ref-title">Ports &amp; Protocols</span>
             <span class="ref-sub">${PORTS_PROTOCOLS.length} commonly-tested port numbers</span>
           </span>
         </button>
         <button class="ref-card" id="wirelessCard">
-          <span class="ref-icon">${refBadge('WPA3', '#fb923c')}</span>
+          <span class="ref-icon">${refBadge('WPA3', '#ff8c1a')}</span>
           <span>
             <span class="ref-title">Wireless Security</span>
             <span class="ref-sub">WEP vs. WPA vs. WPA2 vs. WPA3</span>
           </span>
         </button>
         <button class="ref-card" id="fsCard">
-          <span class="ref-icon">${refBadge('NTFS', '#facc15')}</span>
+          <span class="ref-icon">${refBadge('NTFS', '#ffe600')}</span>
           <span>
             <span class="ref-title">File Systems</span>
             <span class="ref-sub">FAT32, exFAT, NTFS, ext4, APFS compared</span>
@@ -947,7 +983,10 @@
         <div class="explain">
           <p class="verdict ${allCorrect ? 'good' : 'bad'}">${allCorrect ? 'Correct order!' : 'Not quite right.'}</p>
           <p class="body">${esc(ex.explanation)}</p>
-          <button class="next" id="nextBtn">${state.pbqIndex + 1 >= state.pbqQueue.length ? 'Finish Practice' : 'Next Exercise'}</button>
+          <div class="post-answer-row">
+            <button class="next" id="nextBtn">${state.pbqIndex + 1 >= state.pbqQueue.length ? 'Finish Practice' : 'Next Exercise'}</button>
+            <button class="back-to-start-btn" id="backToStartBtn">← Back to Start</button>
+          </div>
         </div>
       `;
     }
@@ -980,6 +1019,8 @@
     if (checkBtn) checkBtn.addEventListener('click', pbqCheckOrder);
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) nextBtn.addEventListener('click', nextPBQ);
+    const backToStartBtn = document.getElementById('backToStartBtn');
+    if (backToStartBtn) backToStartBtn.addEventListener('click', backToStart);
   }
 
   function renderPBQMatch(ex) {
@@ -1015,7 +1056,10 @@
         <div class="explain">
           <p class="verdict ${allCorrect ? 'good' : 'bad'}">${allCorrect ? 'All matched correctly!' : 'Not quite right.'}</p>
           <p class="body">${esc(ex.explanation)}</p>
-          <button class="next" id="nextBtn">${state.pbqIndex + 1 >= state.pbqQueue.length ? 'Finish Practice' : 'Next Exercise'}</button>
+          <div class="post-answer-row">
+            <button class="next" id="nextBtn">${state.pbqIndex + 1 >= state.pbqQueue.length ? 'Finish Practice' : 'Next Exercise'}</button>
+            <button class="back-to-start-btn" id="backToStartBtn">← Back to Start</button>
+          </div>
         </div>
       `;
     }
@@ -1047,6 +1091,8 @@
     if (checkBtn) checkBtn.addEventListener('click', pbqCheckMatch);
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) nextBtn.addEventListener('click', nextPBQ);
+    const backToStartBtn = document.getElementById('backToStartBtn');
+    if (backToStartBtn) backToStartBtn.addEventListener('click', backToStart);
   }
 
   function renderPBQDone() {
@@ -1097,7 +1143,7 @@
     const q = state.runQuestions[state.currentQuestion];
     if (!q) return;
     const lvl = currentLevel();
-    const hearts = '\u2764\uFE0F'.repeat(state.lives) + '\u{1F5A4}'.repeat(3 - state.lives);
+    const hearts = '\u2764\uFE0F'.repeat(state.lives) + '\u{1F5A4}'.repeat(MAX_LIVES - state.lives);
 
     const optionsHtml = q.options.map((opt, idx) => {
       let cls = 'opt';
@@ -1122,7 +1168,10 @@
         <div class="explain">
           <p class="verdict ${good ? 'good' : 'bad'}">${good ? 'Correct!' : 'Not quite.'}</p>
           <p class="body">${esc(q.explanation)}</p>
-          <button class="next" id="nextBtn">${state.currentQuestion + 1 >= state.runQuestions.length ? 'Finish Round' : 'Next Question'}</button>
+          <div class="post-answer-row">
+            <button class="next" id="nextBtn">${state.currentQuestion + 1 >= state.runQuestions.length ? 'Finish Round' : 'Next Question'}</button>
+            <button class="back-to-start-btn" id="backToStartBtn">← Back to Start</button>
+          </div>
         </div>
       `;
     }
@@ -1162,6 +1211,8 @@
     if (submitBtn) submitBtn.addEventListener('click', submitAnswer);
     const nextBtn = document.getElementById('nextBtn');
     if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
+    const backToStartBtn = document.getElementById('backToStartBtn');
+    if (backToStartBtn) backToStartBtn.addEventListener('click', backToStart);
     const homeBtn = document.getElementById('homeBtn');
     if (homeBtn) homeBtn.addEventListener('click', goHome);
   }
